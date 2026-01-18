@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Viborita 💖</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #ffe6f0;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      background: #fff;
+      border: 3px solid #ff4d88;
+      touch-action: none;
+    }
+    .controls {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-gap: 5px;
+    }
+    button {
+      height: 60px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      background: #ff4d88;
+      color: white;
+    }
+    #mensaje {
+      display: none;
+      text-align: center;
+    }
+    #mensaje h1 {
+      color: #ff1a66;
+    }
+    #heart {
+      font-size: 80px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<p><strong>🍎 Llega a 5 manzanas para descubrir la sorpresa 🍎</strong></p>
+<canvas id="game" width="300" height="300"></canvas>
+
+<div class="controls">
+  <div></div>
+  <button onclick="setDir('UP')">⬆</button>
+  <div></div>
+  <button onclick="setDir('LEFT')">⬅</button>
+  <button onclick="setDir('DOWN')">⬇</button>
+  <button onclick="setDir('RIGHT')">➡</button>
+</div>
+
+<div id="mensaje">
+  <h1>💖 Feliz mesesario mi princesa preciosa 💖</h1>
+  <h2>Te amoo infinitamente 🥹💖</h2>
+  <img src="foto.jpg" alt="Nosotros" style="width:220px;border-radius:20px;box-shadow:0 4px 10px rgba(0,0,0,0.3);" />
+  <img src="foquita.png" alt="Foquita" style="width:140px;margin-top:10px;" />
+  <div id="heart">❤️</div>
+</div>
+
+<audio id="musica" src="cancion.mp3"></audio>
+  <h2>D & N</h2>
+</div>
+  <h2>D & N</h2>
+</div>
+
+<script>
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+
+  const box = 20;
+  let snake = [{ x: 140, y: 140 }];
+  let direction = "RIGHT";
+  let apple = randomApple();
+  let score = 0;
+
+  function randomApple() {
+    return {
+      x: Math.floor(Math.random() * 15) * box,
+      y: Math.floor(Math.random() * 15) * box
+    };
+  }
+
+  function setDir(dir) {
+    if (dir === 'UP' && direction !== 'DOWN') direction = 'UP';
+    if (dir === 'DOWN' && direction !== 'UP') direction = 'DOWN';
+    if (dir === 'LEFT' && direction !== 'RIGHT') direction = 'LEFT';
+    if (dir === 'RIGHT' && direction !== 'LEFT') direction = 'RIGHT';
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    snake.forEach((p, i) => {
+      ctx.fillStyle = i === 0 ? '#ff1a66' : '#ff80aa';
+      ctx.fillRect(p.x, p.y, box, box);
+    });
+
+    ctx.fillStyle = '#00cc44';
+    ctx.fillRect(apple.x, apple.y, box, box);
+
+    let head = { ...snake[0] };
+    if (direction === 'UP') head.y -= box;
+    if (direction === 'DOWN') head.y += box;
+    if (direction === 'LEFT') head.x -= box;
+    if (direction === 'RIGHT') head.x += box;
+
+    if (head.x === apple.x && head.y === apple.y) {
+      score++;
+      apple = randomApple();
+    } else {
+      snake.pop();
+    }
+
+    snake.unshift(head);
+
+    if (score >= 5) {
+      canvas.style.display = 'none';
+      document.querySelector('.controls').style.display = 'none';
+      document.getElementById('mensaje').style.display = 'block';
+      const audio = document.getElementById('musica');
+      audio.volume = 0.4;
+      audio.play();
+      clearInterval(game);
+    }
+  }
+
+  const game = setInterval(draw, 220);
+</script>
+
+</body>
+</html>
